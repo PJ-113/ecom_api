@@ -58,7 +58,7 @@ public class ProductRestController {
      return ApiMapper.toDto(p, redeemCodeService.availableStock(p));
  }
 
- // ---------- แอดมิน: LIST ----------
+ // ---------- แอดมิน: LIST ---------- (เหมือนกับ List Product)
  @GetMapping("/admin/all")
  public List<ProductDto> adminAll(){
      return productService.allForAdmin().stream()
@@ -137,13 +137,16 @@ public class ProductRestController {
      return ApiMapper.toDto(p, redeemCodeService.availableStock(p));
  }
 
- // ---------- แอดมิน: ปิดการขาย / Toggle ----------
+ // ---------- แอดมิน: ปิดการขาย /  ----------
  @DeleteMapping("/admin/{id}")
  public void softDelete(@PathVariable Long id){ productService.softDelete(id); }
 
+ /*
+//---------- แอดมิน: ปิดการขาย / Toggle(เหมือนข้างบน active) ----------
  @PostMapping("/admin/{id}/toggle")
  public void toggle(@PathVariable Long id){ productService.toggleActive(id); }
-
+*/
+ 
  // ---------- ช่วยเซฟไฟล์ ----------
  private String storeFileAndGetWebPath(MultipartFile file) throws IOException {
      String ext = Optional.ofNullable(file.getOriginalFilename())

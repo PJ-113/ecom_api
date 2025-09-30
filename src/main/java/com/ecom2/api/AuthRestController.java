@@ -37,53 +37,63 @@ public class AuthRestController {
       return ResponseEntity.badRequest().body(Map.of("message","name, email, password required"));
     }
     try {
-      User u = userService.register(in.name(), in.email().trim().toLowerCase(), in.password(), false);
+       
 
-      if (in.phone()!=null && !in.phone().isBlank()) {
-        u = userService.updateProfile(u.getId(), null, null, in.phone());
-      }
+        User saved = userService.register(in.name(), in.email(), in.password(), /*admin?*/ false);
 
-      String role = String.valueOf(u.getRole());
-      var dto = new UserDto(u.getId(), u.getName(), u.getEmail(), u.getPhone(), role);
+    
+        if (in.phone() != null) {
+            userService.updateProfile(saved.getId(), null, null, in.phone());
+           
+            saved = userService.get(saved.getId());
+        }
 
-      
-      UserDetails userDetails = org.springframework.security.core.userdetails.User
-              .withUsername(u.getEmail())
-              .password(u.getPassword())
-              .roles(role.replace("ROLE_",""))
-              .build();
-      String token = jwtService.generateToken(userDetails);
+        String roleStr = saved.getRole().name(); 
+        String name  = (saved.getProfile() != null) ? saved.getProfile().getName()  : null;
+        String phone = (saved.getProfile() != null) ? saved.getProfile().getPhone() : null;
 
-      return ResponseEntity.ok(new LoginRes(token, dto));
+        var dto = new UserDto(saved.getId(), name, saved.getEmail(), phone, roleStr);
+
+        UserDetails userDetails = org.springframework.security.core.userdetails.User
+                .withUsername(saved.getEmail())
+                .password(saved.getPassword())
+                .roles(roleStr.replace("ROLE_", ""))   // -> "USER" หรือ "ADMIN"
+                .build();
+
+        String token = jwtService.generateToken(userDetails);
+        return ResponseEntity.ok(new LoginRes(token, dto));
+
     } catch (IllegalStateException ex) {
-      return ResponseEntity.status(409).body(Map.of("message", ex.getMessage()));
+        return ResponseEntity.status(409).body(Map.of("message", ex.getMessage()));
     } catch (Exception ex) {
-      return ResponseEntity.internalServerError().body(Map.of("message", "Register failed"));
-    }
+        return ResponseEntity.internalServerError().body(Map.of("message", "Register failed"));
+    } 
   }
 
   @PostMapping("/login")
   public ResponseEntity<?> login(@RequestBody LoginReq in) {
-    if (in == null || in.email()==null || in.password()==null) {
-      return ResponseEntity.badRequest().body(Map.of("message","email and password required"));
-    }
+	    if (in == null || in.email() == null || in.password() == null) {
+	        return ResponseEntity.badRequest().body(Map.of("message", "email and password required"));
+	    }
 
-    User u = userService.findByEmail2(in.email());
-    if (u == null || !encoder.matches(in.password(), u.getPassword())) {
-      return ResponseEntity.status(401).body(Map.of("message","Invalid credentials"));
-    }
+	    User u = userService.findByEmail2(in.email());
+	    if (u == null || !encoder.matches(in.password(), u.getPassword())) {
+	        return ResponseEntity.status(401).body(Map.of("message", "Invalid credentials"));
+	    }
 
-    String role = String.valueOf(u.getRole());
-    var dto = new UserDto(u.getId(), u.getName(), u.getEmail(), u.getPhone(), role);
+	    String roleStr = u.getRole().name(); // "ROLE_USER"/"ROLE_ADMIN"
+	    String name  = (u.getProfile() != null) ? u.getProfile().getName()  : null;
+	    String phone = (u.getProfile() != null) ? u.getProfile().getPhone() : null;
 
-    
-    UserDetails userDetails = org.springframework.security.core.userdetails.User
-            .withUsername(u.getEmail())
-            .password(u.getPassword())
-            .roles(role.replace("ROLE_",""))
-            .build();
-    String token = jwtService.generateToken(userDetails);
+	    var dto = new UserDto(u.getId(), name, u.getEmail(), phone, roleStr);
 
-    return ResponseEntity.ok(new LoginRes(token, dto));
-  }
+	    UserDetails userDetails = org.springframework.security.core.userdetails.User
+	            .withUsername(u.getEmail())
+	            .password(u.getPassword())
+	            .roles(roleStr.replace("ROLE_", ""))
+	            .build();
+
+	    String token = jwtService.generateToken(userDetails);
+	    return ResponseEntity.ok(new LoginRes(token, dto));
+	}
 }

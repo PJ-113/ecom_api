@@ -3,24 +3,22 @@ package com.ecom2.entity;
 import jakarta.persistence.*;
 
 
+import jakarta.persistence.*;
+
 @Entity
 @Table(name = "users")
 public class User {
 
+  public enum Role { ROLE_USER, ROLE_ADMIN }
+
   @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long id;
-
-  @Column(nullable = false)
-  private String name;
 
   @Column(nullable = false, unique = true)
   private String email;
 
   @Column(nullable = false)
   private String password;
-  
-  @Column
-  private String phone;
 
   @Enumerated(EnumType.STRING)
   @Column(nullable = false)
@@ -28,20 +26,19 @@ public class User {
 
   private boolean enabled = true;
 
+  // ความสัมพันธ์ One-to-One (back-reference)
+  @OneToOne(mappedBy = "user", cascade = CascadeType.ALL,
+            orphanRemoval = true, fetch = FetchType.LAZY)
+  private UserProfile profile;
+
   public User() {}
 
   // getters/setters
   public Long getId() { return id; }
   public void setId(Long id) { this.id = id; }
 
-  public String getName() { return name; }
-  public void setName(String name) { this.name = name; }
-
   public String getEmail() { return email; }
   public void setEmail(String email) { this.email = email; }
-  
-  public String getPhone() { return phone;}
-  public void setPhone(String phone) { this.phone = phone;}
 
   public String getPassword() { return password; }
   public void setPassword(String password) { this.password = password; }
@@ -51,5 +48,10 @@ public class User {
 
   public boolean isEnabled() { return enabled; }
   public void setEnabled(boolean enabled) { this.enabled = enabled; }
-}
 
+  public UserProfile getProfile() { return profile; }
+  public void setProfile(UserProfile profile) {
+    this.profile = profile;
+    if (profile != null) profile.setUser(this); // sync ฝั่ง Profile
+  }
+}

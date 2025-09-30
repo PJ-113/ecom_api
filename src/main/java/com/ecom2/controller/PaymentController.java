@@ -1,3 +1,4 @@
+/*
 package com.ecom2.controller;
 
 import java.math.BigDecimal;
@@ -64,4 +65,4 @@ public class PaymentController {
     model.addAttribute("order", order);
     return "payment-success";   // => templates/payment-success.html
   }
-}
+} */

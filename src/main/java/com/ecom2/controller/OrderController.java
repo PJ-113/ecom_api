@@ -1,3 +1,4 @@
+/*
 package com.ecom2.controller;
 
 import com.ecom2.entity.User;
@@ -42,4 +43,4 @@ public class OrderController {
     m.addAttribute("orders", orderService.ofUser(currentUser(auth)));
     return "orders";
   }
-}
+}*/

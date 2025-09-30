@@ -1,3 +1,4 @@
+/*
 package com.ecom2.controller;
 
 import com.ecom2.entity.User;
@@ -22,13 +23,13 @@ public class CartController {
     this.userService = userService;
   }
 
-  /** ดึงผู้ใช้ปัจจุบัน ถ้าไม่ล็อกอินจะคืนค่า null */
+  /** ดึงผู้ใช้ปัจจุบัน ถ้าไม่ล็อกอินจะคืนค่า null 
   private User currentUser(Principal principal) {
 	  if (principal == null) return null;
 	  return userService.getByEmail(principal.getName());
 	}
 
-  /** แสดงตะกร้า */
+  /** แสดงตะกร้า 
   @GetMapping
   public String view(Model m, Principal principal, RedirectAttributes ra) {
     var u = currentUser(principal);
@@ -82,4 +83,4 @@ public class CartController {
     return "redirect:/cart";
   }
 
-}
+}*/

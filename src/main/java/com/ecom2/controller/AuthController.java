@@ -1,3 +1,4 @@
+/*
 package com.ecom2.controller;
 
 import com.ecom2.service.UserService;
@@ -43,4 +44,4 @@ public class AuthController {
     public String getPassword() { return password; }
     public void setPassword(String password) { this.password = password; }
   }
-}
+}*/

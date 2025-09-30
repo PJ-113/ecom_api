@@ -1,3 +1,4 @@
+/*
 package com.ecom2.controller;
 
 import java.util.HashMap;
@@ -48,3 +49,4 @@ public class AdminRedeemCodeController {
         return Map.of("productId", productId, "available", redeemCodeService.availableStock(p));
     }
 }
+*/

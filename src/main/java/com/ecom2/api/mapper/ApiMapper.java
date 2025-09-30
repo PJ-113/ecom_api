@@ -77,7 +77,17 @@ public class ApiMapper {
     
     public static UserDto toDto(User u) {
         if (u == null) return null;
+
         String role = String.valueOf(u.getRole());
-        return new UserDto(u.getId(), u.getName(), u.getEmail(), u.getPhone(), role);
+        String name  = (u.getProfile() != null) ? u.getProfile().getName() : null;
+        String phone = (u.getProfile() != null) ? u.getProfile().getPhone() : null;
+
+        return new UserDto(
+            u.getId(),
+            name,
+            u.getEmail(),
+            phone,
+            role
+        );
     }
 }

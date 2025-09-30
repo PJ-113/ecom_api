@@ -1,3 +1,4 @@
+/*
 package com.ecom2.controller;
 
 import org.springframework.security.core.Authentication;
@@ -13,6 +14,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.ecom2.entity.User;
 import com.ecom2.service.UserService;
+
 
 
 import jakarta.validation.constraints.Email;
@@ -100,3 +102,4 @@ public class ProfileController {
     public void setPhone(String phone) { this.phone = phone; }
   }
 }
+*/
